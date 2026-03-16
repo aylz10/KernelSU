@@ -80,8 +80,9 @@ pub fn disable_adb_root() -> Result<()> {
     let commands: &[(&str, &[&str])] = &[
         (resetprop_path, &["-n", "ro.debuggable", "0"]),
         (resetprop_path, &["-n", "ro.adb.secure", "1"]),
-        (resetprop_path, &["--delete", "service.adb.root"]),
-        (resetprop_path, &["--delete", "service.adb.tcp.port"]),
+        (resetprop_path, &["-n", "service.adb.root", "0"]),
+        // (resetprop_path, &["--delete", "service.adb.root"]),
+        // (resetprop_path, &["--delete", "service.adb.tcp.port"]),
         ("rm", &[resetprop_path]),
         ("setprop", &["ctl.restart", "adbd"]),
     ];
