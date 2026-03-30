@@ -101,17 +101,21 @@ pub fn disable_adb_root() -> Result<()> {
     rp.set("ro.adb.secure", "1")
         .context("Failed to set ro.adb.secure")?;
 
-    for prop in &[
-        "service.adb.root",
-        "service.adb.tcp.port",
-        "ro.boot.selinux",
-    ] {
-        info!("Restoring: resetprop --delete {prop}");
-        let _ = rp.delete(prop);
-        if let Ok(ctx) = sys_prop::get_context(prop) {
-            let _ = sys_prop::compact(Some(&ctx));
-        }
-    }
+    info!("Restoring: resetprop -n service.adb.root 0");
+    rp.set("service.adb.root", "0")
+        .context("Failed to set service.adb.root")?;
+
+    // for prop in &[
+        // "service.adb.root",
+        // "service.adb.tcp.port",
+        // "ro.boot.selinux",
+    // ] {
+        // info!("Restoring: resetprop --delete {prop}");
+        // let _ = rp.delete(prop);
+        // if let Ok(ctx) = sys_prop::get_context(prop) {
+            // let _ = sys_prop::compact(Some(&ctx));
+        // }
+    // }
 
     exec_shell_commands(&[("setprop", &["ctl.restart", "adbd"])], "Restoring")?;
 
